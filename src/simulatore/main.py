@@ -38,3 +38,9 @@ KEY_VALUE = {
     "margin-of-profit": (20, 5),
     "temperature": (20, 10)
 }
+
+def normal_distr_calc(value):
+    avg, stdev = KEY_VALUE[value]
+    return np.round((np.random.normal(avg, stdev, 5)), 2)
+
+print(normal_distr_calc("material-price"))
