@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Aziendale</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-areas:
+                'header header header'
+                'sidebar main main'
+                'footer footer footer';
+            grid-template-columns: 200px 1fr;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+        }
+
+        header {
+            grid-area: header;
+            background-color: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ccc; /* Aggiunto bordo inferiore */
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-right: 1px solid #ccc; /* Aggiunto bordo destro */
+        }
+
+        main {
+            grid-area: main;
+            padding: 20px;
+            display: grid;
+            grid-template-areas:
+                'kpi kpi kpi kpi'
+                'charts charts tables tables';
+            grid-gap: 20px;
+        }
+
+        .footer {
+            grid-area: footer;
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+            border-top: 1px solid #ccc; /* Aggiunto bordo superiore */
+        }
+
+        .kpi-section {
+            grid-area: kpi;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #ccc; /* Aggiunto bordo inferiore */
+            padding-bottom: 20px;
+        }
+
+        .chart-section {
+            grid-area: charts;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc; /* Aggiunto bordo */
+        }
+
+        .table-section {
+            grid-area: tables;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc; /* Aggiunto bordo */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>Logo Aziendale</div>
+        <div>Titolo Dashboard</div>
+        <div>Selettore Periodo</div>
+    </header>
+
+    <aside class="sidebar">
+        <div>Filtri e Controlli</div>
+    </aside>
+
+    <main>
+        <div class="kpi-section">
+            <div>KPI 1</div>
+            <div>KPI 2</div>
+            <div>KPI 3</div>
+            <div>KPI 4</div>
+        </div>
+
+        <div class="chart-section">
+            Grafici
+        </div>
+
+        <div class="table-section">
+            Tabelle
+        </div>
+    </main>
+
+    <footer>
+        Footer
+    </footer>
+
+</body>
+</html>
