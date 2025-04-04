@@ -1,99 +1,182 @@
-from dash import Dash
-from dash import dcc, html
+from dash import dcc, html, dash_table
 
+# Definizione del layout principale della dashboard
 layout = html.Div(
-    style={
-        # Stile griglia dell'header
-        "display": "grid",
+    style = {
+        "display": "grid",  # Layout a griglia
         "gridTemplateAreas": "'header header header' 'sidebar main main' 'footer footer footer'",
-        "gridTemplateColumns": "200px 1fr",  # fr = fractional unit, 1 = 25% della seconda colonna che si adatterà automaticamente
-        "gridTemplateRows": "auto 1fr auto",
-        "height": "100vh",  # vh = viewport height, la dashboard occupa tutto lo spazio della pagina
-        "margin": 0,
-        "padding": 0,
+        "gridTemplateColumns": "200px 1fr",  # Sidebar di larghezza fissa, contenuto principale adattabile
+        "gridTemplateRows": "auto 1fr auto",  # Header e footer con altezza automatica, contenuto principale flessibile
+        "height": "100vh",  # Occupa tutta l'altezza della finestra
+        "margin": "0",
+        "padding": "0",
         "fontFamily": "sans-serif",
+        "backgroundColor": "#1F2935"
     },
-    children=[
-        # Header
+    children = [
+        # Header della dashboard
         html.Header(
-            style={
+            style = {
                 "gridArea": "header",
-                "backgroundColor": "#f0f0f0",  # Colore di sfondo grigio chiaro
+                "backgroundColor": "#768188",
                 "padding": "20px",
                 "display": "flex",
-                "justifyContent": "space-between",  # Distribuzione uguale degli elementi
-                "alignItems": "center",  # Allineamento verticale
-                "borderBottom": "1px solid #ccc",  # Bordo inferiore che separa l'header
+                "justifyContent": "space-between",
+                "alignItems": "center",
+                "borderBottom": "1px solid #ccc",
+                "borderRadius": "8px", 
             },
-            children=[
+            children = [
                 html.Div("Logo Aziendale"),
                 html.Div("Titolo Dashboard"),
                 html.Div("Selettore Periodo"),
             ],
         ),
-        # Barra laterale
+        # Barra laterale per filtri e controlli
         html.Aside(
-            style={
+            style = {
                 "gridArea": "sidebar",
-                "backgroundColor": "#e0e0e0",  # Sfondo grigio per distingurela dal resto
+                "backgroundColor": "#7E8D9F",
                 "padding": "20px",
-                "borderRight": "1px solid #ccc",  # Bordo a destra per separarla
+                "borderRight": "1px solid #ccc",
+                "borderRadius": "8px",
+                "marginTop": "20px",
+                "marginBottom": "20px"
             },
-            children=html.Div("Filtri e Controlli"),
+            children = [
+                dcc.Upload(
+                    id = "load_dataset_button",
+                    children = html.Button(
+                        "Carica Dataset",
+                        style = {
+                            "fontSize": "20px",
+                            "borderRadius": "8px",
+                            "border": "1px solid #7E8D9F",
+                        }
+                    ),
+                    multiple = False,
+                    accept = ".csv"
+                ),
+                html.Div(id="file-name", style={"marginTop": "10px", "color": "white"}),
+            ],
         ),
-        # Sezione principale
+        # Sezione principale della dashboard
         html.Main(
-            style={
+            style = {
                 "gridArea": "main",
                 "padding": "20px",
-                "display": "grid",  # Sottogriglia per organizzare KPI, grafici e tabelle
+                "display": "grid",  # Sottogriglia per KPI, grafici e tabelle
                 "gridTemplateAreas": "'kpi kpi kpi kpi' 'charts charts tables tables'",
-                "gridGap": "20px",  # Distanza tra gli elementi
+                "gridGap": "20px",
+                "backgroundColor": "#1F2935"
             },
-            children=[
+            children = [
                 # Sezione KPI
                 html.Div(
-                    style={
+                    style = {
                         "gridArea": "kpi",
                         "display": "flex",
                         "justifyContent": "space-around",
-                        "borderBottom": "1px solid #ccc",  # Bordo inferiore
+                        "borderBottom": "1px solid #cccc",
                         "paddingBottom": "20px",
                     },
-                    children=[html.Div(f"KPI {i+1}") for i in range(4)],
+                    children = [
+                        html.Div(
+                            style = {
+                                "width": "25%",
+                                "height": "100%",
+                                "backgroundColor": "#A3D0C5",
+                                "border": "1px solid black",
+                                "margin": "5px",
+                                "borderRadius": "8px",  # Arrotonda i bordi delle KPI
+                            },
+                            children = "KPI1",
+                        ),
+                        html.Div(
+                            style = {
+                                "width": "25%",
+                                "height": "100%",
+                                "backgroundColor": "#A3D0C5",
+                                "border": "1px solid black",
+                                "margin": "5px",
+                                "borderRadius": "8px",
+                            },
+                            children = "KPI2",
+                        ),
+                        html.Div(
+                            style = {
+                                "width": "25%",
+                                "height": "100%",
+                                "backgroundColor": "#A3D0C5",
+                                "border": "1px solid black",
+                                "margin": "5px",
+                                "borderRadius": "8px",
+                            },
+                            children = "KPI3",
+                        ),
+                        html.Div(
+                            style = {
+                                "width": "25%",
+                                "height": "100%",
+                                "backgroundColor": "#A3D0C5",
+                                "border": "1px solid black",
+                                "margin": "5px",
+                                "borderRadius": "8px",
+                            },
+                            children = "KPI4",
+                        ),
+                    ]
                 ),
                 # Sezione grafici
                 html.Div(
-                    style={
+                    style = {
                         "gridArea": "charts",
-                        "backgroundColor": "#fff",  # Sfondo bianco
+                        "backgroundColor": "#6DC7AF",
                         "padding": "20px",
-                        "border": "1px solid #ccc",  # Bordo per separare la sezione
+                        "border": "1px solid #ccc",
+                        "borderRadius": "8px",  # Arrotonda i bordi dei grafici
                     },
-                    children="Grafici",
+                    children = "Grafici",
                 ),
                 # Sezione tabelle
                 html.Div(
-                    style={
+                    style = {
                         "gridArea": "tables",
-                        "backgroundColor": "#fff",
+                        "backgroundColor": "#6DC7AF",
                         "padding": "20px",
                         "border": "1px solid #ccc",
+                        "borderRadius": "8px",  # Arrotonda i bordi delle tabelle
                     },
-                    children="Tabelle",
+                    children = [
+                        dcc.Loading(
+                            type = "circle",
+                            children = [
+                                dash_table.DataTable(
+                                    id = "dataset_table",
+                                    columns = [],
+                                    data = [],
+                                    page_size = 5,
+                                    #style_table = {"overflowX": "auto"},
+                                    style_cell = {"textAlign": "left"},
+                                ),
+                            ],
+                        ),
+                        
+                    ],
                 ),
             ],
         ),
-        # Footer
+        # Footer della dashboard
         html.Footer(
-            style={
+            style = {
                 "gridArea": "footer",
-                "backgroundColor": "#f0f0f0",
+                "backgroundColor": "#768188",
                 "padding": "10px",
                 "textAlign": "center",
-                "borderTop": "1px solid #ccc",  # Bordo superiore per separare il footer
+                "borderTop": "1px solid #ccc",
+                "borderRadius": "8px",  # Arrotonda solo gli angoli inferiori
             },
-            children="Footer",
+            children = "Author: Mario Stabile",
         ),
     ],
 )
