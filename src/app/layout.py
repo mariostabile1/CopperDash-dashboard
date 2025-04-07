@@ -7,11 +7,12 @@ layout = html.Div(
         "gridTemplateAreas": "'header header header' 'sidebar main main' 'footer footer footer'",
         "gridTemplateColumns": "200px 1fr",  # Sidebar di larghezza fissa, contenuto principale adattabile
         "gridTemplateRows": "auto 1fr auto",  # Header e footer con altezza automatica, contenuto principale flessibile
-        "height": "100vh",  # Occupa tutta l'altezza della finestra
+        "height": "120vh",  # Occupa tutta l'altezza della finestra
         "margin": "0",
         "padding": "0",
         "fontFamily": "sans-serif",
-        "backgroundColor": "#1F2935"
+        "backgroundColor": "#1F2935",
+        #"minHeight": "1000px",
     },
     children = [
         # Header della dashboard
@@ -24,7 +25,7 @@ layout = html.Div(
                 "justifyContent": "space-between",
                 "alignItems": "center",
                 "borderBottom": "1px solid #ccc",
-                "borderRadius": "8px", 
+                "borderRadius": "8px",
             },
             children = [
                 html.Div("Logo Aziendale"),
@@ -32,6 +33,7 @@ layout = html.Div(
                 html.Div("Selettore Periodo"),
             ],
         ),
+        # --------------------------------------------------------------------------
         # Barra laterale per filtri e controlli
         html.Aside(
             style = {
@@ -60,15 +62,17 @@ layout = html.Div(
                 html.Div(id="file-name", style={"marginTop": "10px", "color": "white"}),
             ],
         ),
+        # --------------------------------------------------------------------------
         # Sezione principale della dashboard
         html.Main(
             style = {
                 "gridArea": "main",
                 "padding": "20px",
                 "display": "grid",  # Sottogriglia per KPI, grafici e tabelle
-                "gridTemplateAreas": "'kpi kpi kpi kpi' 'charts charts tables tables'",
+                "gridTemplateAreas": "'kpi kpi kpi kpi' 'charts charts charts charts' 'tables tables tables tables'",
                 "gridGap": "20px",
-                "backgroundColor": "#1F2935"
+                "backgroundColor": "#1F2935",
+                "minHeight": "1000px",  # Aumenta l'altezza minima della sezione main
             },
             children = [
                 # Sezione KPI
@@ -143,11 +147,18 @@ layout = html.Div(
                     style = {
                         "gridArea": "tables",
                         "backgroundColor": "#6DC7AF",
-                        "padding": "20px",
+                        "padding": "10px",
                         "border": "1px solid #ccc",
                         "borderRadius": "8px",  # Arrotonda i bordi delle tabelle
+                        "position": "relative",
+                        "overflowX": "auto",
+                        "display": "flex",        # Abilita Flexbox per il contenitore
+                        #"justifyContent": "center", # Allinea orizzontalmente al centro
+                        "alignItems": "center",     # Allinea verticalmente al centro (se l'altezza del div lo permette)
+                        "minHeight": "50px", 
                     },
                     children = [
+
                         dcc.Loading(
                             type = "circle",
                             children = [
@@ -155,13 +166,20 @@ layout = html.Div(
                                     id = "dataset_table",
                                     columns = [],
                                     data = [],
-                                    page_size = 5,
-                                    #style_table = {"overflowX": "auto"},
+                                    page_size = 12,
+                                    style_table = {
+                                        "overflowX": "auto",
+                                        #"overflowY": "auto",
+                                        #"position": "absolute",
+                                        #"top": 0,
+                                        #"left": 0
+                                        },
                                     style_cell = {"textAlign": "left"},
+                                    page_action = "native"
                                 ),
                             ],
                         ),
-                        
+
                     ],
                 ),
             ],
