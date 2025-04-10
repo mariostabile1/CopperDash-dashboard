@@ -59,7 +59,13 @@ layout = html.Div(
                     multiple = False,
                     accept = ".csv"
                 ),
-                html.Div(id="file-name", style={"marginTop": "10px", "color": "white"}),
+                html.Div(id="file_name", style={"marginTop": "10px", "color": "white"}),
+                
+                dcc.Dropdown(
+                    ["Line chart"],
+                    "Line chart",
+                    id = "dataset_chart_type",
+                )
             ],
         ),
         # --------------------------------------------------------------------------
@@ -140,7 +146,12 @@ layout = html.Div(
                         "border": "1px solid #ccc",
                         "borderRadius": "8px",  # Arrotonda i bordi dei grafici
                     },
-                    children = "Grafici",
+                    children = [
+                        dcc.Graph(
+                            id = "dataset_graph",
+                            style = {}
+                        )    
+                    ],
                 ),
                 # Sezione tabelle
                 html.Div(
@@ -158,7 +169,6 @@ layout = html.Div(
                         "minHeight": "50px", 
                     },
                     children = [
-
                         dcc.Loading(
                             type = "circle",
                             children = [
@@ -166,10 +176,10 @@ layout = html.Div(
                                     id = "dataset_table",
                                     columns = [],
                                     data = [],
-                                    page_size = 12,
+                                    page_size = 10,
                                     style_table = {
                                         "overflowX": "auto",
-                                        #"overflowY": "auto",
+                                        "overflowY": "auto",
                                         #"position": "absolute",
                                         #"top": 0,
                                         #"left": 0
