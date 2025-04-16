@@ -1,49 +1,34 @@
-"""
-from dash import Input, Output, State, callback
+from dash import Input, Output
 from data import parse_dataset
 
 def register_callbacks(app):
-    @callback(
-        [Output("dataset_table", "columns"),
-        Output("dataset_table", "data"),
-        Output("file-name", "children")],
-        [Input("load_dataset_button", "contents")],
-        [State("load_dataset_button", "filename")]
+    # callback per la tabella del dataset
+    @app.callback(
+        [
+        Output("dataset_table", "columns"), # restituisce le colonne del dataset
+        Output("dataset_table", "data"), # resitutisce il contenuto del dataset
+        Output("file_name", "children") # restituisce anche il nome del file
+        ], 
+        #Output("stored_dataframe", "data")], # Output per memorizzare il DataFrame
+        [
+        Input("load_dataset_button", "contents"), # prende in input proprio il file csv
+        Input("load_dataset_button", "filename") # prende in input anche il nome del file CSV
+        ] 
     )
-    
-    def update_output(dataset_contents, filename):
-        if dataset_contents is not None:
-            columns, data = parse_dataset(dataset_contents)
-            return columns, data, f"File caricato: {filename}"
-        
-        return [], [], ""
-"""
-
-from dash import Input, Output, State, callback, dcc
-from data import parse_dataset, process_data_for_chart
-import plotly.express as px
-import pandas as pd
-
-def register_callbacks(app):
-    @callback(
-        [Output("dataset_table", "columns"),
-        Output("dataset_table", "data"),
-        Output("file_name", "children"),
-        Output("stored_dataframe", "data")], # Output per memorizzare il DataFrame
-        [Input("load_dataset_button", "contents")],
-        [State("load_dataset_button", "filename")]
-    )
-    def update_on_dataset_load(dataset_contents, filename):
-        if dataset_contents is not None:
+    def update_table(contents, filename):
+        if contents is not None:
             try:
-                columns, data, df = parse_dataset(dataset_contents)
-                return columns, data, f"File caricato: {filename}", df.to_dict('records')
+                columns, data = parse_dataset(contents)
+                return columns, data, filename
             except Exception as e:
                 print(f"Errore nel callback di caricamento: {e}")
-                return [], [], "Errore nel caricamento del file", None
-        return [], [], "", None
-
-    @callback(
+                return [], [], ""
+        return [], [], ""
+    
+    #--------------------------------------------------------------------------#
+    # callback per il grafico principale
+"""
+    @app.callback(
         Output("dataset_graph", "figure"),
         Input("stored_dataframe", "data")
     )
@@ -61,3 +46,7 @@ def register_callbacks(app):
                 return None
         else:
             return None
+        
+    #--------------------------------------------------------------------------#
+    # callback per i grafici dei kpi
+"""

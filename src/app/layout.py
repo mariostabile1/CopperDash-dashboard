@@ -7,9 +7,9 @@ layout = html.Div(
         "gridTemplateAreas": "'header header header' 'sidebar main main' 'footer footer footer'",
         "gridTemplateColumns": "200px 1fr",  # Sidebar di larghezza fissa, contenuto principale adattabile
         "gridTemplateRows": "auto 1fr auto",  # Header e footer con altezza automatica, contenuto principale flessibile
-        "height": "120vh",  # Occupa tutta l'altezza della finestra
-        "margin": "0",
-        "padding": "0",
+        #"height": "120vh",  # Occupa tutta l'altezza della finestra
+        #"margin": "0",
+        #"padding": "0",
         "fontFamily": "sans-serif",
         "backgroundColor": "#1F2935",
         #"minHeight": "1000px",
@@ -33,7 +33,7 @@ layout = html.Div(
                 html.Div("Selettore Periodo"),
             ],
         ),
-        # --------------------------------------------------------------------------
+        #--------------------------------------------------------------------------#
         # Barra laterale per filtri e controlli
         html.Aside(
             style = {
@@ -59,7 +59,7 @@ layout = html.Div(
                     multiple = False,
                     accept = ".csv"
                 ),
-                html.Div(id="file_name", style={"marginTop": "10px", "color": "white"}),
+                html.Div(id="file_name", style={"margin": "10px", "color": "white"}),
                 
                 dcc.Dropdown(
                     ["Line chart"],
@@ -68,7 +68,7 @@ layout = html.Div(
                 )
             ],
         ),
-        # --------------------------------------------------------------------------
+        #--------------------------------------------------------------------------#
         # Sezione principale della dashboard
         html.Main(
             style = {
@@ -78,7 +78,7 @@ layout = html.Div(
                 "gridTemplateAreas": "'kpi kpi kpi kpi' 'charts charts charts charts' 'tables tables tables tables'",
                 "gridGap": "20px",
                 "backgroundColor": "#1F2935",
-                "minHeight": "1000px",  # Aumenta l'altezza minima della sezione main
+                #"minHeight": "100%",  # Aumenta l'altezza minima della sezione main
             },
             children = [
                 # Sezione KPI
@@ -100,7 +100,12 @@ layout = html.Div(
                                 "margin": "5px",
                                 "borderRadius": "8px",  # Arrotonda i bordi delle KPI
                             },
-                            children = "KPI1",
+                            children = [
+                                dcc.Graph(
+                                    id="kpi-1-graph", 
+                                    config={"displayModeBar": False}
+                                ),
+                            ],  
                         ),
                         html.Div(
                             style = {
@@ -111,7 +116,12 @@ layout = html.Div(
                                 "margin": "5px",
                                 "borderRadius": "8px",
                             },
-                            children = "KPI2",
+                            children = [
+                                dcc.Graph(
+                                    id="kpi-2-graph", 
+                                    config={"displayModeBar": False}
+                                ),    
+                            ],
                         ),
                         html.Div(
                             style = {
@@ -122,7 +132,12 @@ layout = html.Div(
                                 "margin": "5px",
                                 "borderRadius": "8px",
                             },
-                            children = "KPI3",
+                            children = [
+                                dcc.Graph(
+                                    id="kpi-3-graph", 
+                                    config={"displayModeBar": False}
+                                ),
+                            ],
                         ),
                         html.Div(
                             style = {
@@ -133,7 +148,12 @@ layout = html.Div(
                                 "margin": "5px",
                                 "borderRadius": "8px",
                             },
-                            children = "KPI4",
+                            children = [
+                                dcc.Graph(
+                                    id="kpi-4-graph", 
+                                    config={"displayModeBar": False}
+                                ),
+                            ],
                         ),
                     ]
                 ),
@@ -166,30 +186,24 @@ layout = html.Div(
                         "display": "flex",        # Abilita Flexbox per il contenitore
                         #"justifyContent": "center", # Allinea orizzontalmente al centro
                         "alignItems": "center",     # Allinea verticalmente al centro (se l'altezza del div lo permette)
-                        "minHeight": "50px", 
+                        "minHeight": "100px", 
                     },
                     children = [
-                        dcc.Loading(
-                            type = "circle",
-                            children = [
-                                dash_table.DataTable(
-                                    id = "dataset_table",
-                                    columns = [],
-                                    data = [],
-                                    page_size = 10,
-                                    style_table = {
-                                        "overflowX": "auto",
-                                        "overflowY": "auto",
-                                        #"position": "absolute",
-                                        #"top": 0,
-                                        #"left": 0
-                                        },
-                                    style_cell = {"textAlign": "left"},
-                                    page_action = "native"
-                                ),
-                            ],
+                        dash_table.DataTable(
+                            id = "dataset_table",
+                            columns = [],
+                            data = [],
+                            page_size = 10,
+                            style_table = {
+                                "overflowX": "auto",
+                                "overflowY": "auto",
+                                #"position": "absolute",
+                                #"top": 0,
+                                #"left": 0
+                                },
+                            style_cell = {"textAlign": "left"},
+                            page_action = "native"
                         ),
-
                     ],
                 ),
             ],

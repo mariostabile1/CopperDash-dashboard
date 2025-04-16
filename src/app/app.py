@@ -1,4 +1,4 @@
-from dash import Dash, dcc, html
+from dash import Dash
 import layout
 from callbacks import register_callbacks
 
@@ -6,10 +6,13 @@ from callbacks import register_callbacks
 app = Dash(__name__)
 
 # Assegno il layout
+app.layout = layout.layout
+"""
 app.layout = html.Div([
     layout.layout,
-    dcc.Store(id = "stored_dataframe")
+    #dcc.Store(id = "stored_dataframe")
 ])
+"""
 
 register_callbacks(app)
 
