@@ -15,11 +15,11 @@ def parse_dataset(dataset_contents):
         columns = [{"name": col, "id": col} for col in loaded_dataset_dataframe.columns]
         data = loaded_dataset_dataframe.to_dict('records') #ogni record avrà una riga
         
-        return columns, data # restituisce le colonne e i dati 
+        return columns, data, loaded_dataset_dataframe # restituisce le colonne e i dati e il dataframe per i grafici
     except Exception as e:
         
         print(f"Errore durante la lettura del dataset: {e}")
-        return [], [] # in caso di errore restituisce le colonne e i dati vuoti
+        return [], [], pd.DataFrame() # in caso di errore restituisce le colonne, i dati vuoti e un dataframe vuoto
 
 """
 # Funzione per processare i dati per il grafico (da implementare in base alle tue esigenze)

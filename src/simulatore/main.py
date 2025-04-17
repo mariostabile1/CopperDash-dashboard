@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import os
+from pandas.tseries.holiday import USFederalHolidayCalendar # calendario delle festività federali degli USA
+from pandas.tseries.offsets import CustomBusinessDay # calendario generalistico in cui vengono esclusi i weekends
 
 """
 prezzo medio rame in USD/tonnellata tra 2015-2025
@@ -65,7 +67,13 @@ def lognormal_dist_calc(mean, sigma):
     #mean, sigma = KEY_VALUE[value]
     return np.round(rng.lognormal(mean, sigma, DAYS_RANGE), TRUNKED_DECIMAL)
 
+def datetime_calc():
+    start_date = pd.Timestamp.today().normalize() # normalize rimuove l'orario dalla data
+    fed_holidays = CustomBusinessDay(calendar = USFederalHolidayCalendar())
+    return pd.date_range(start = start_date, periods = DAYS_RANGE, freq = fed_holidays).strftime("%d/%m/%Y") # strftime converte la data nel formato che voglio io
+
 def generate_dataset():
+    datetime = datetime_calc()
     mining_depth = uniform_distr_calc(KEY_VALUE["mining_depth"]["low"], KEY_VALUE["mining_depth"]["high"])
     annual_extracted_ammount_raw = normal_distr_calc(KEY_VALUE["annual_extracted_ammount_raw"]["avg"], KEY_VALUE["annual_extracted_ammount_raw"]["stdev"])
     daily_extracted_ammount_raw = np.round((annual_extracted_ammount_raw / DAYS_RANGE), TRUNKED_DECIMAL)
@@ -81,6 +89,7 @@ def generate_dataset():
     
     dataset_dataframe = pd.DataFrame(
         {
+            "Date": datetime,
             "Mining depth (m)": mining_depth,
             "Daily extracted ammount raw (tons)": daily_extracted_ammount_raw,
             "Copper content in raw material (%)": copper_content,

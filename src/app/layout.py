@@ -7,7 +7,7 @@ layout = html.Div(
         "gridTemplateAreas": "'header header header' 'sidebar main main' 'footer footer footer'",
         "gridTemplateColumns": "200px 1fr",  # Sidebar di larghezza fissa, contenuto principale adattabile
         "gridTemplateRows": "auto 1fr auto",  # Header e footer con altezza automatica, contenuto principale flessibile
-        #"height": "120vh",  # Occupa tutta l'altezza della finestra
+        "height": "120vh",  # Occupa tutta l'altezza della finestra
         #"margin": "0",
         #"padding": "0",
         "fontFamily": "sans-serif",
@@ -62,9 +62,9 @@ layout = html.Div(
                 html.Div(id="file_name", style={"margin": "10px", "color": "white"}),
                 
                 dcc.Dropdown(
-                    ["Line chart"],
-                    "Line chart",
-                    id = "dataset_chart_type",
+                    id = "column_selector",
+                    options = [],
+                    placeholder = "columns",
                 )
             ],
         ),
