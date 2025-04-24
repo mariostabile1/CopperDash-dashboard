@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 import os
-from pandas.tseries.holiday import USFederalHolidayCalendar # calendario delle festività federali degli USA
-from pandas.tseries.offsets import CustomBusinessDay # calendario generalistico in cui vengono esclusi i weekends
+from pandas.tseries.holiday import USFederalHolidayCalendar # calendario delle festività federali degli USA (https://pandas.pydata.org/pandas-docs/version/0.17.1/timeseries.html)
+from pandas.tseries.offsets import CustomBusinessDay # calendario generalistico in cui vengono esclusi i weekends (https://pandas.pydata.org/pandas-docs/version/0.17.1/timeseries.html#custom-business-days-experimental)
 
 """
 prezzo medio rame in USD/tonnellata tra 2015-2025
@@ -11,11 +11,11 @@ link: https://fred.stlouisfed.org/series/PCOPPUSDM
 copyright: guarda documentazione
 MEDIA: 7148.60
 DEV STANDARD: 1686.26 (approssimato per difetto a 2 cifre decimali)
-
 """
 
 rng = np.random.default_rng() # genero un'istanza di Generator, per usare la nuova API sulla generazione di valori random (come descritto nella documentazione di numpy)
 
+# costante che racchiude sotto forma di dizionari ( quindi: {"nome":valore} ) i vari dati raccolti sotto forma di parametri per le distribuzioni
 KEY_VALUE = {
     # Variabili operative
     "mining_depth": {"low": 304.8, "high": 762},
@@ -27,7 +27,6 @@ KEY_VALUE = {
     # Variabili economiche   
     "material_price": {"avg": 7148.60, "stdev": 1686}, # Da fonte (testa del file)
     "daily_expenses": {"shape": 2, "scale": 25000},
-    #daily_earnings = (material_price * daily_extracted_ammount) - daily_expences
     
     # Variabili ambientali
     "temperature": {"avg": 17.1, "stdev": 5},
@@ -39,39 +38,42 @@ KEY_VALUE = {
 
 DAYS_RANGE = 253 # sono stati esclusi dai giorni lavorativi le principali feste e i weekend del paese in cui nasce la miniera (USA)
 TRUNKED_DECIMAL = 2
-DATASET_PATH = os.path.abspath("../dataset/mining_dataset.csv")
+DATASET_PATH = os.path.abspath("../dataset/mining_dataset.csv") # definisco il path assoluto in cui sarà generato il dataset
 
-# Referenza: np.random.normal(loc: float o array <media>, scale: floats o array <deviazione standard>, scale: int o tuple <forma della distribuzione>)
-
+# Referenza: rng.normal(loc: float o array <media>, scale: floats o array <deviazione standard>, scale: int o tuple <forma della distribuzione>)
+# funzioni che calcolano i dati secondo varie distribuzioni statistiche
 def normal_distr_calc(avg, stdev):
-    #avg, stdev = KEY_VALUE[value]
     return np.round(rng.normal(avg, stdev, DAYS_RANGE), TRUNKED_DECIMAL)
 
 def poisson_distr_calc(avg):
-    #avg = KEY_VALUE[value]
     return np.round(rng.poisson(avg, DAYS_RANGE), TRUNKED_DECIMAL)
 
 def uniform_distr_calc(low, high):
-    #low, high = KEY_VALUE[value]
     return np.round(rng.uniform(low, high, DAYS_RANGE), TRUNKED_DECIMAL)
 
 def gamma_distr_calc(shape, scale):
-    #shape, scale = KEY_VALUE[value]
     return np.round(rng.gamma(shape, scale, DAYS_RANGE), TRUNKED_DECIMAL)
 
 def  beta_distr_calc(a, b):
-    #a, b = KEY_VALUE[value]
     return np.round(rng.beta(a, b, DAYS_RANGE), TRUNKED_DECIMAL)
 
 def lognormal_dist_calc(mean, sigma):
-    #mean, sigma = KEY_VALUE[value]
     return np.round(rng.lognormal(mean, sigma, DAYS_RANGE), TRUNKED_DECIMAL)
 
+"""
+questa funzione serve a definire date realistiche per i giorni lavorativi,
+altrimenti verrebbero generati uno dopo l'altro in cui sarebbero considerati
+giorni lavorativi anche i weekend e i giorni festivi, qui mi limito a partire dalla data odierna,
+seguendo un calendario custom (CustomBusinessDay, che esclude a priori i weekend) aggiornato 
+su una serie nativa di pandas che mappa le festività federali
+americane (USFederalHolidayCalendar())
+"""
 def datetime_calc():
     start_date = pd.Timestamp.today().normalize() # normalize rimuove l'orario dalla data
-    fed_holidays = CustomBusinessDay(calendar = USFederalHolidayCalendar())
+    fed_holidays = CustomBusinessDay(calendar = USFederalHolidayCalendar()) # creo il calendario custom
     return pd.date_range(start = start_date, periods = DAYS_RANGE, freq = fed_holidays).strftime("%d/%m/%Y") # strftime converte la data nel formato che voglio io
 
+# qui mi limito a eseguire tutte le funzioni raccogliendo i dati per popolare un DataFrame che verrà usato per generare il dataset .csv
 def generate_dataset():
     datetime = datetime_calc()
     mining_depth = uniform_distr_calc(KEY_VALUE["mining_depth"]["low"], KEY_VALUE["mining_depth"]["high"])
@@ -87,6 +89,7 @@ def generate_dataset():
     strike_days = poisson_distr_calc(KEY_VALUE["strike_days"]["avg"])
     machine_breakdowns = poisson_distr_calc(KEY_VALUE["machine_breakdowns"]["avg"])
     
+    # genero il DataFrame e lo popolo
     dataset_dataframe = pd.DataFrame(
         {
             "Date": datetime,
@@ -103,7 +106,7 @@ def generate_dataset():
             "Machine breakdowns": machine_breakdowns
         }
     )
-    dataset_dataframe.to_csv(DATASET_PATH, index = False)
+    dataset_dataframe.to_csv(DATASET_PATH, index = False) # index = false, evita che sia dato un indice numerico alle righe
     
 if generate_dataset() is not False:
     print(f"Dataset generato correttamente in posizione: {DATASET_PATH}")

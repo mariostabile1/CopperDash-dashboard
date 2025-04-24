@@ -28,6 +28,7 @@ layout = html.Div(
                 "borderRadius": "8px",
             },
             children = [
+                # testo che verrà mostrato nella barra dell'header
                 html.Div("Logo Aziendale"),
                 html.Div("Titolo Dashboard"),
                 html.Div("Selettore Periodo"),
@@ -46,6 +47,7 @@ layout = html.Div(
                 "marginBottom": "20px"
             },
             children = [
+                # letteralmente il bottone upload
                 dcc.Upload(
                     id = "load_dataset_button",
                     children = html.Button(
@@ -56,15 +58,16 @@ layout = html.Div(
                             "border": "1px solid #7E8D9F",
                         }
                     ),
-                    multiple = False,
-                    accept = ".csv"
+                    multiple = False, # si può capicare solo in file alla volta
+                    accept = ".csv" # accetta l'upload solo di file .csv
                 ),
                 html.Div(id="file_name", style={"margin": "10px", "color": "white"}),
                 
+                # menù a tendina
                 dcc.Dropdown(
                     id = "column_selector",
                     options = [],
-                    placeholder = "columns",
+                    placeholder = "choose a column",
                 )
             ],
         ),
@@ -102,8 +105,8 @@ layout = html.Div(
                             },
                             children = [
                                 dcc.Graph(
-                                    id="kpi-1-graph", 
-                                    config={"displayModeBar": False}
+                                    id = "kpi_1", 
+                                    config = {"displayModeBar": False}
                                 ),
                             ],  
                         ),
@@ -118,8 +121,8 @@ layout = html.Div(
                             },
                             children = [
                                 dcc.Graph(
-                                    id="kpi-2-graph", 
-                                    config={"displayModeBar": False}
+                                    id = "kpi_2", 
+                                    config = {"displayModeBar": False}
                                 ),    
                             ],
                         ),
@@ -134,8 +137,8 @@ layout = html.Div(
                             },
                             children = [
                                 dcc.Graph(
-                                    id="kpi-3-graph", 
-                                    config={"displayModeBar": False}
+                                    id = "kpi_3", 
+                                    config = {"displayModeBar": False}
                                 ),
                             ],
                         ),
@@ -150,8 +153,8 @@ layout = html.Div(
                             },
                             children = [
                                 dcc.Graph(
-                                    id="kpi-4-graph", 
-                                    config={"displayModeBar": False}
+                                    id = "kpi_4", 
+                                    config = {"displayModeBar": False}
                                 ),
                             ],
                         ),
@@ -167,9 +170,12 @@ layout = html.Div(
                         "borderRadius": "8px",  # Arrotonda i bordi dei grafici
                     },
                     children = [
+                        # questo è il grafico principale, sopra la tabella del dataset
                         dcc.Graph(
                             id = "dataset_graph",
-                            style = {}
+                            style = {
+                                "backgroundColor": "#768188",
+                            }
                         )    
                     ],
                 ),
@@ -189,6 +195,7 @@ layout = html.Div(
                         "minHeight": "100px", 
                     },
                     children = [
+                        # tabella del dataset
                         dash_table.DataTable(
                             id = "dataset_table",
                             columns = [],
