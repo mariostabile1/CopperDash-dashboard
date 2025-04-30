@@ -13,11 +13,11 @@ def parse_dataset(dataset_contents):
         loaded_dataset_dataframe = pd.read_csv(io.StringIO(decoded.decode("utf-8")))
         # prepara il dataset per le DataTable di dash, in colonne e dati
         columns = [{"name": col, "id": col} for col in loaded_dataset_dataframe.columns]
-        data = loaded_dataset_dataframe.to_dict('records') #ogni record avrà una riga
+        data = loaded_dataset_dataframe.to_dict('records') # ogni record avrà una riga
         
         return columns, data, loaded_dataset_dataframe # restituisce le colonne e i dati e il dataframe per i grafici
     except Exception as e:
         
-        print(f"Errore durante la lettura del dataset: {e}")
+        print(f"Dataset reading error: {e}")
         return [], [], pd.DataFrame() # in caso di errore restituisce le colonne, i dati vuoti e un dataframe vuoto
 

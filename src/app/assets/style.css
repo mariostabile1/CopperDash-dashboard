@@ -1,0 +1,16 @@
+/*
+    Questo css è messo qua solamente perchè non è possibile modificare internamente 
+    in altro modo lo stile del body di default che definisce dash in base al browser.
+    
+    Serve solo a eliminare un orribile bordo bianco nella finestra della dashboard causato
+    dal margine di default che viene applicato al body della pagina.
+
+    Se messo nella cartella assets lo stile viene caricato automaticamente da dash e sovrascrive
+    il body di default
+
+    referenza: https://dash.plotly.com/external-resources
+*/
+
+html, body {
+    margin: 0;
+}

@@ -2,6 +2,7 @@ from dash import Input, Output, State
 from data import parse_dataset
 from kpi import calculate_kpi
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 
 def register_callbacks(app):
@@ -23,11 +24,11 @@ def register_callbacks(app):
         if contents is not None:
             try:
                 columns, data, dataframe = parse_dataset(contents) # chiamata a data per il parsing del dataset
-                dropdown_coptions = [{"label": col, "value": col} for col in dataframe.columns[1:10]] # popola il menù a tendina dalla colonna 2 a 10
-                return columns, data, filename, dropdown_coptions
+                dropdown_options = [{"label": col, "value": col} for col in dataframe.columns[1:10]] # popola il menù a tendina dalla colonna 2 a 10
+                return columns, data, filename, dropdown_options
             
             except Exception as e:
-                print(f"Errore nel callback di caricamento: {e}")
+                print(f"Callback error: {e}")
                 return [], [], "", [] # in caso di errore restituisce tutto vuoto
             
         return [], [], "", []
@@ -50,57 +51,83 @@ def register_callbacks(app):
                 # assegna tipo datetime alla prima colonna
                 # errors = "coerce" evita di alzare errori che interrompono il flusso del codice in caso di mal formazione della data
                 # dayfirst = True serve ad evitare che pandas interpreti male le date in formato europeo (giorno/mese/anno), visto che di base usa il formato americano (mese/giorno/anno)
-                dataframe[dataframe.columns[0]] = pd.to_datetime(dataframe[dataframe.columns[0]], errors = "coerce", dayfirst = True)   
-                return px.bar(dataframe, x = dataframe.columns[0], y = selected_column, title=f"{selected_column} - over time") # da il valore agli assi e il titolo
+                dataframe[dataframe.columns[0]] = pd.to_datetime(
+                    dataframe[dataframe.columns[0]], 
+                    errors = "coerce",
+                    dayfirst = True
+                    )
+                return px.bar(
+                    dataframe, 
+                    x = dataframe.columns[0], 
+                    y = selected_column, 
+                    title=f"{selected_column} - over time") # da il valore agli assi e il titolo
             except Exception as e:
                 
                 print(f"Errore nel grafico: {e}") # in caso di errore stampa questa linea
-                return px.line(title="N/A") 
+                return px.line(title = "Choose a column to show on graph") # se non si sceglie la colonna dal menù a tendina lo considera come errore, quindi mostra questo
         else:
-            return px.line(title = "N/A") # grafico vuoto
+            return px.line(title = "Upload dataset then choose a column to show on graph")
         
     #--------------------------------------------------------------------------#
     # callback per i grafici dei kpi
     
-    def build_kpi_figure_px(value, y_label, ref_min, ref_max, title):
-        dataframe = pd.DataFrame({"KPI": [value], "Categoria": [y_label]})
-        kpi_figure = px.bar(dataframe, x = "KPI", y = "Categoria" , orientation = "h", title = title)
-        #kpi_figure.add_vline(x=ref_min, line_dash="dash", line_color="orange")
-        #kpi_figure.add_vline(x=ref_max, line_dash="dash", line_color="green")
-        kpi_figure.update_layout(xaxis = dict(range=[0, max(value * 1.6, 1)]), height = 250, margin = dict(t = 40, b = 40, l = 20, r = 20))
-        return kpi_figure
+    # costruisce la 'figura' che sarà visualizzata nella dashboard
+    def build_kpi_figure(value, title, suffix):
+        
+        kpi_figure = go.Figure(go.Indicator( # crea una figura di dash con un componente chiamato Indicator
+            mode = "number", # mostra solo il numero
+            value = value, # il valore da visualizzare
+            number = {"font": {"size": 50, "color": "gray"}, "valueformat": ",.0f", "suffix": f"{suffix}"}, # personalizzazione della scritta del numero, con il formato e il suffisso
+            title = {"text": title, "font": {"size": 18, "color": "gray"}}, # il titolo del kpi con il suo stile
+            domain={"x": [0, 1], "y": [0, 1]} # definisco quanto spazio occupa l'area della figura (tutto lo spazio disponibile in questo caso)
+        ))
+        # è un metodo che aggiorna lo stile della figura (t, b, l, r sono i vari margini)
+        kpi_figure.update_layout(paper_bgcolor = "white", height = 250, margin = dict(t = 40, b = 40, l = 20, r = 20))
+        
+        return kpi_figure   
+    
+    # è la stessa identica figura rispetto a quella di sopra che viene usata solo per mantenere continuità grafica al prosto di vedere un grafico dcc.Graph vuoto
+    # e viene chiamata solo nel caso in cui non sia stato caricato il dataset
+    def build_empty_kpi_placeholder():
+        empty_kpi_figure = go.Figure(go.Indicator( # crea una figura di dash con un componente chiamato Indicator
+            mode = "number", # mostra solo il numero
+            value = 0, # il valore da visualizzare
+            number = {"font": {"size": 50, "color": "gray"}, "suffix": ""}, # personalizzazione della scritta del numero, con il formato e il suffisso
+            title = {"text": "Awaiting for dataset to upload", "font": {"size": 18, "color": "gray"}}, # il titolo del kpi con il suo stile
+            domain={"x": [0, 1], "y": [0, 1]} # definisco quanto spazio occupa l'area della figura (tutto lo spazio disponibile in questo caso)
+        ))
+        # è un metodo che aggiorna lo stile della figura (t, b, l, r sono i vari margini)
+        empty_kpi_figure.update_layout(paper_bgcolor = "white", height = 250, margin = dict(t = 40, b = 40, l = 20, r = 20))
+        
+        return empty_kpi_figure  
 
     @app.callback(
         [
-        Output("kpi_1", "figure"),
+        Output("kpi_1", "figure"), # sono gli id delle sezioni del layout
         Output("kpi_2", "figure"),
         Output("kpi_3", "figure"),
         Output("kpi_4", "figure"),
         ],
-        Input("load_dataset_button", "contents")
+        Input("load_dataset_button", "contents") # l'input del callback è la pressione del tasto nel layout
     )
     
     def update_kpi_graph(contents):
         if contents is not None:
             _, _, dataframe = parse_dataset(contents)
-            #print(dataframe)
+            
             try:
-                kpi = calculate_kpi(dataframe)
-                print(kpi.get("kpi_1", 0))  # o anche print(kpi)
-                kpi_1 = build_kpi_figure_px(kpi.get("kpi_1", 0), "Ton/ora", 200, 600, "Tonnellate di minerale estratto per ora lavorativa")
-                kpi_2 = build_kpi_figure_px(kpi.get("kpi_2", 0), "Costo/ton", 30, 80, "Costo operativo per tonnellata di rame puro")
-                kpi_3 = build_kpi_figure_px(kpi.get("kpi_3", 0), "KW/ton", 200, 1000, "KW per tonnellata di rame estratto")
-                kpi_4 = build_kpi_figure_px(kpi.get("kpi_4", 0), "$/ton", 100, 300, "Guadagno netto per tonnellata di rame")
+                kpi = calculate_kpi(dataframe) # calcolo i numeri dei kpi dalla funzione in kpi.py
                 
-                #kpi_1 = px.bar(x=[""], y=[kpi.get("kpi_1", 0)], title="Tonnellate di minerale estratto per ora lavorativa")
-                #kpi_2 = px.bar(x=[""], y=[kpi.get("kpi_2", 0)], title="Costo operativo per tonnellata di rame puro")
-                #kpi_3 = px.bar(x=[""], y=[kpi.get("kpi_3", 0)], title="KW per tonnellata di rame estratto")
-                #kpi_4 = px.bar(x=[""], y=[kpi.get("kpi_4", 0)], title="Guadagno netto per tonnellata di rame")
-                #print(kpi_1), kpi[1], kpi[2], kpi[3])
+                # chiamo la funzione che costruisce la figura per ogni kpi
+                kpi_1 = build_kpi_figure(kpi.get("kpi_1", 0), "Tons of ore mined per working hour", " Ton/hour")
+                kpi_2 = build_kpi_figure(kpi.get("kpi_2", 0), "Operating cost per ton of pure copper", " $/ton")
+                kpi_3 = build_kpi_figure(kpi.get("kpi_3", 0), "KW per ton of copper mined", " KW/ton")
+                kpi_4 = build_kpi_figure(kpi.get("kpi_4", 0), "Net earnings per ton of copper", " $/ton")
+                
                 return kpi_1, kpi_2, kpi_3, kpi_4
             
             except Exception as e:
-                print(f"Errore nel grafico: {e}") # in caso di errore stampa questa linea
-                return  None, None, None, None
+                print(f"Graph error: {e}") # in caso di errore stampa questa linea
+                return  build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder() # restituisco niente
         else:
-            return None, None, None, None
+            return build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder()

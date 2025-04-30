@@ -38,7 +38,7 @@ KEY_VALUE = {
 
 DAYS_RANGE = 253 # sono stati esclusi dai giorni lavorativi le principali feste e i weekend del paese in cui nasce la miniera (USA)
 TRUNKED_DECIMAL = 2
-DATASET_PATH = os.path.abspath("../dataset/mining_dataset.csv") # definisco il path assoluto in cui sarà generato il dataset
+DATASET_PATH = os.path.abspath("../dataset/mining_dataset-1.csv") # definisco il path assoluto in cui sarà generato il dataset
 
 # Referenza: rng.normal(loc: float o array <media>, scale: floats o array <deviazione standard>, scale: int o tuple <forma della distribuzione>)
 # funzioni che calcolano i dati secondo varie distribuzioni statistiche

@@ -1,18 +1,18 @@
 from dash import dcc, html, dash_table
+import plotly.graph_objects as go
 
 # Definizione del layout principale della dashboard
 layout = html.Div(
     style = {
-        "display": "grid",  # Layout a griglia
-        "gridTemplateAreas": "'header header header' 'sidebar main main' 'footer footer footer'",
-        "gridTemplateColumns": "200px 1fr",  # Sidebar di larghezza fissa, contenuto principale adattabile
-        "gridTemplateRows": "auto 1fr auto",  # Header e footer con altezza automatica, contenuto principale flessibile
+        "display": "grid",  # layout a griglia, mi risultava più facile che posizionare tutto a mano
+        "gridTemplateAreas": "'header header' 'sidebar main' 'footer footer'", 
+        "gridTemplateColumns": "1fr 6fr",  # sidebar di larghezza fissa, contenuto principale adattabile
+        "gridTemplateRows": "auto 1fr auto",  # seader e footer con altezza automatica, contenuto principale flessibile
         "height": "120vh",  # Occupa tutta l'altezza della finestra
-        #"margin": "0",
-        #"padding": "0",
         "fontFamily": "sans-serif",
         "backgroundColor": "#1F2935",
-        #"minHeight": "1000px",
+        "width": "100%"
+        
     },
     children = [
         # Header della dashboard
@@ -24,14 +24,12 @@ layout = html.Div(
                 "display": "flex",
                 "justifyContent": "space-between",
                 "alignItems": "center",
-                "borderBottom": "1px solid #ccc",
                 "borderRadius": "8px",
+                "alignText": "center",
             },
             children = [
                 # testo che verrà mostrato nella barra dell'header
-                html.Div("Logo Aziendale"),
-                html.Div("Titolo Dashboard"),
-                html.Div("Selettore Periodo"),
+                html.Div("KPI Dashboard for primary sector analysis"),
             ],
         ),
         #--------------------------------------------------------------------------#
@@ -51,7 +49,7 @@ layout = html.Div(
                 dcc.Upload(
                     id = "load_dataset_button",
                     children = html.Button(
-                        "Carica Dataset",
+                        "Load Dataset",
                         style = {
                             "fontSize": "20px",
                             "borderRadius": "8px",
@@ -66,8 +64,11 @@ layout = html.Div(
                 # menù a tendina
                 dcc.Dropdown(
                     id = "column_selector",
-                    options = [],
-                    placeholder = "choose a column",
+                    placeholder = "choose a column", # testo che viene mostrato di default
+                    style = {
+                        "width": "100%", # fa usare tutta la larghezza disponibile
+                        "whiteSpace": "normal", # fa andare a capo le opzioni
+                    }
                 )
             ],
         ),
@@ -81,7 +82,6 @@ layout = html.Div(
                 "gridTemplateAreas": "'kpi kpi kpi kpi' 'charts charts charts charts' 'tables tables tables tables'",
                 "gridGap": "20px",
                 "backgroundColor": "#1F2935",
-                #"minHeight": "100%",  # Aumenta l'altezza minima della sezione main
             },
             children = [
                 # Sezione KPI
@@ -105,7 +105,7 @@ layout = html.Div(
                             },
                             children = [
                                 dcc.Graph(
-                                    id = "kpi_1", 
+                                    id = "kpi_1",
                                     config = {"displayModeBar": False}
                                 ),
                             ],  
@@ -186,30 +186,27 @@ layout = html.Div(
                         "backgroundColor": "#6DC7AF",
                         "padding": "10px",
                         "border": "1px solid #ccc",
-                        "borderRadius": "8px",  # Arrotonda i bordi delle tabelle
+                        "borderRadius": "8px", # Arrotonda i bordi delle tabelle
                         "position": "relative",
-                        "overflowX": "auto",
-                        "display": "flex",        # Abilita Flexbox per il contenitore
+                        "overflowX": "auto", 
+                        "display": "flex", # Abilita Flexbox per il contenitore
                         #"justifyContent": "center", # Allinea orizzontalmente al centro
-                        "alignItems": "center",     # Allinea verticalmente al centro (se l'altezza del div lo permette)
+                        "alignItems": "center", # Allinea verticalmente al centro (se l'altezza del div lo permette)
                         "minHeight": "100px", 
                     },
                     children = [
                         # tabella del dataset
                         dash_table.DataTable(
                             id = "dataset_table",
-                            columns = [],
-                            data = [],
-                            page_size = 10,
+                            columns = [], # columns e data queste vengono popolate dalle funzioni di callback
+                            data = [],    # quindi qui le dichiaro vuote
+                            page_size = 10, # numero massimo di righe della tabella visualizzabili contemporaneamente senza cambiare pagina
                             style_table = {
-                                "overflowX": "auto",
+                                "overflowX": "auto", # se la tabella è troppo grande abilita lo scroll interno, qui orizzontale, sotto verticale
                                 "overflowY": "auto",
-                                #"position": "absolute",
-                                #"top": 0,
-                                #"left": 0
                                 },
-                            style_cell = {"textAlign": "left"},
-                            page_action = "native"
+                            style_cell = {"textAlign": "left"}, # allineo i valori delle celle a sinistra
+                            page_action = "native" # uso la paginazione nativa del browser
                         ),
                     ],
                 ),
