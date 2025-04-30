@@ -12,4 +12,4 @@ register_callbacks(app) # chiamo la funzione dei callback
 
 # Avvio dl server
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug = False) # di default il server gira in localhost su porta 8050 (127.0.0.1:8050)

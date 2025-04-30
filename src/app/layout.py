@@ -26,10 +26,11 @@ layout = html.Div(
                 "alignItems": "center",
                 "borderRadius": "8px",
                 "alignText": "center",
+                "fontWeight": "bold"
             },
             children = [
                 # testo che verrà mostrato nella barra dell'header
-                html.Div("KPI Dashboard for primary sector analysis"),
+                html.Div("MineBoard - Mining industry KPI analysis dashboard"),
             ],
         ),
         #--------------------------------------------------------------------------#

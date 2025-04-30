@@ -93,7 +93,7 @@ def register_callbacks(app):
             mode = "number", # mostra solo il numero
             value = 0, # il valore da visualizzare
             number = {"font": {"size": 50, "color": "gray"}, "suffix": ""}, # personalizzazione della scritta del numero, con il formato e il suffisso
-            title = {"text": "Awaiting for dataset to upload", "font": {"size": 18, "color": "gray"}}, # il titolo del kpi con il suo stile
+            title = {"text": "KPI - Awaiting for dataset to upload", "font": {"size": 18, "color": "gray"}}, # il titolo del kpi con il suo stile
             domain={"x": [0, 1], "y": [0, 1]} # definisco quanto spazio occupa l'area della figura (tutto lo spazio disponibile in questo caso)
         ))
         # è un metodo che aggiorna lo stile della figura (t, b, l, r sono i vari margini)

@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from pandas.tseries.holiday import USFederalHolidayCalendar # calendario delle festività federali degli USA (https://pandas.pydata.org/pandas-docs/version/0.17.1/timeseries.html)
 from pandas.tseries.offsets import CustomBusinessDay # calendario generalistico in cui vengono esclusi i weekends (https://pandas.pydata.org/pandas-docs/version/0.17.1/timeseries.html#custom-business-days-experimental)
+import random
 
 """
 prezzo medio rame in USD/tonnellata tra 2015-2025
@@ -14,7 +15,7 @@ DEV STANDARD: 1686.26 (approssimato per difetto a 2 cifre decimali)
 """
 
 rng = np.random.default_rng() # genero un'istanza di Generator, per usare la nuova API sulla generazione di valori random (come descritto nella documentazione di numpy)
-
+random_int = random.randint(100, 999) # genero questo numero casuale che concateno al nome del dataset solo per distinguere più generazioni di dataset dentro la stessa cartella
 # costante che racchiude sotto forma di dizionari ( quindi: {"nome":valore} ) i vari dati raccolti sotto forma di parametri per le distribuzioni
 KEY_VALUE = {
     # Variabili operative
@@ -38,7 +39,7 @@ KEY_VALUE = {
 
 DAYS_RANGE = 253 # sono stati esclusi dai giorni lavorativi le principali feste e i weekend del paese in cui nasce la miniera (USA)
 TRUNKED_DECIMAL = 2
-DATASET_PATH = os.path.abspath("../dataset/mining_dataset-1.csv") # definisco il path assoluto in cui sarà generato il dataset
+DATASET_PATH = os.path.abspath(f"../dataset/mining_dataset-{random_int}.csv") # definisco il path assoluto in cui sarà generato il dataset
 
 # Referenza: rng.normal(loc: float o array <media>, scale: floats o array <deviazione standard>, scale: int o tuple <forma della distribuzione>)
 # funzioni che calcolano i dati secondo varie distribuzioni statistiche
