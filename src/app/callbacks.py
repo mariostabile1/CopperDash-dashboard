@@ -128,6 +128,6 @@ def register_callbacks(app):
             
             except Exception as e:
                 print(f"Graph error: {e}") # in caso di errore stampa questa linea
-                return  build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder() # restituisco niente
+                return  build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder() # restituisco la figura placaholder
         else:
             return build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder(), build_empty_kpi_placeholder()
