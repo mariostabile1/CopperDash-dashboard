@@ -30,7 +30,7 @@ layout = html.Div(
             },
             children = [
                 # testo che verrà mostrato nella barra dell'header
-                html.Div("MineBoard - Mining industry KPI analysis dashboard"),
+                html.Div("CopperDash - Mining industry KPI analysis dashboard"),
             ],
         ),
         #--------------------------------------------------------------------------#

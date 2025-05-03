@@ -33,7 +33,7 @@ KEY_VALUE = {
     "temperature": {"avg": 17.1, "stdev": 5},
     
     # Fenomeni imprevedibili
-    "strike_days": {"avg": 0.01}, # Sarebbero gli scioperi, google traduttore me la da così
+    "strike_days": {"avg": 0.01}, # Sono gli scioperi
     "machine_breakdowns": {"avg": 0.03}
 }
 
