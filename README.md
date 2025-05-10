@@ -4,8 +4,8 @@ Codice completo della dashboard, sviluppato durante il corso di laurea triennale
 ## Requisiti
 - Python3
 - Dash >= 2.18.2
-- numpy>=2.2.3
-- pandas>=2.2.3
+- numpy >= 2.2.3
+- pandas >= 2.2.3
 
 ## Installazione
 
@@ -23,8 +23,24 @@ chmod +x start
 ```
 
 Utilizzo (la prima volta installerà tutto, poi basterà eseguirlo per avviare l'applicazione)
+
 ```bash
 ./start
 ```
-## Windows
+### Windows
 
+``` powershell
+git clone https://github.com/mariostabile1/CopperDash-dashboard
+cd CopperDash-dashboard
+```
+Esegui l'installer
+
+``` powershell
+.\start.bat
+```
+
+Utilizzo (la prima volta installerà tutto, poi basterà eseguirlo per avviare l'applicazione)
+
+``` powershell
+.\start.bat
+```
